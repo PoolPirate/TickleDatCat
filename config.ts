@@ -36,4 +36,4 @@ export function initConfig() {
 }
 
 export let ACCOUNT: Account = null!;
-export let SEND_BACKOFF: number = 50;
+export let SEND_BACKOFF: number = 60;
