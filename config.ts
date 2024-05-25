@@ -8,7 +8,7 @@ export type Config = {
 
 const plainConfig: Config = {
   privateKey: "",
-  sendBackoff: 50,
+  sendBackoff: 60,
 };
 
 export function initConfig() {
