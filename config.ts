@@ -4,11 +4,13 @@ import { existsSync, readFileSync, writeFileSync } from "fs";
 export type Config = {
   privateKey: string;
   sendBackoff: number;
+  gasPrice: number;
 };
 
 const plainConfig: Config = {
   privateKey: "",
   sendBackoff: 60,
+  gasPrice: 101,
 };
 
 export function initConfig() {
@@ -33,7 +35,15 @@ export function initConfig() {
   }
 
   SEND_BACKOFF = config.sendBackoff;
+
+  if (!isNumber(config.gasPrice)) {
+    console.log("Bad gasPrice. Check your config");
+    process.exit();
+  }
+
+  GAS_PRICE = BigInt(config.gasPrice);
 }
 
 export let ACCOUNT: Account = null!;
 export let SEND_BACKOFF: number = 60;
+export let GAS_PRICE: bigint;

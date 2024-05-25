@@ -7,7 +7,7 @@ import {
   RawTransaction,
   SimpleTransaction,
 } from "@aptos-labs/ts-sdk";
-import { ACCOUNT, SEND_BACKOFF, initConfig } from "./config";
+import { ACCOUNT, GAS_PRICE, SEND_BACKOFF, initConfig } from "./config";
 
 const aptosConfig = new AptosConfig({
   network: Network.MAINNET,
@@ -46,7 +46,7 @@ async function meowTheseNuts() {
         nonce++,
         generatedTx.rawTransaction.payload,
         10n,
-        100n,
+        GAS_PRICE,
         BigInt(new Date().getTime()) + 30n,
         generatedTx.rawTransaction.chain_id
       );
@@ -57,10 +57,17 @@ async function meowTheseNuts() {
           signer: ACCOUNT,
           transaction: tx,
         })
-        .then(() => console.log(`MEOW ${progress++}`));
+        .then(() => console.log(`MEOW ${progress++}`))
+        .catch((reason) => {
+          if (!String(reason).includes("Transaction already in mempool")) {
+            throw reason;
+          } else {
+            console.log("Transaction already in mempool");
+          }
+        });
 
       if (shouldWait) {
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        await new Promise((resolve) => setTimeout(resolve, 2500));
         await refreshNonce();
         shouldWait = false;
       }
